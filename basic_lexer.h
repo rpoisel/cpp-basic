@@ -2,20 +2,36 @@
 
 #include "lexer.h"
 
+#include <functional>
 #include <vector>
 
-class BasicLexer : public Lexer
+constexpr TokenType const INTEGER_LITERAL_TYPE { 2, "INTEGER_LITERAL" };
+constexpr TokenType const STRING_LITERAL_TYPE { 3, "STRING_LITERAL" };
+constexpr TokenType const COMMA_TYPE { 4, "COMMA" };
+
+constexpr TokenType const KEYWORDS[] {
+    { 6, "PRINT" },
+    { 7, "REM" },
+    { 8, "GOTO" },
+};
+
+typedef std::function<bool (char)> CheckCb;
+
+class BasicLexer : public Lexer<6>
 {
 public:
-    static inline bool isWS(char x) { return x  == ' ' || x == '\t' || x == '\n' || x == '\r'; }
-    static inline bool isLetter(char x) { return x >= 'a' && x <= 'z' || x >= 'A' && x <= 'Z'; }
-    static inline bool isDigit(char x) { return x >= '0' && x <= '9'; }
+    static inline bool isWS(char const x) { return x  == ' ' || x == '\t' || x == '\n' || x == '\r'; }
+    static inline bool isLetter(char const x) { return x >= 'a' && x <= 'z' || x >= 'A' && x <= 'Z'; }
+    static inline bool isDigit(char const x) { return x >= '0' && x <= '9'; }
 
-    BasicLexer(std::istream& stream) : Lexer(stream) {}
+    BasicLexer(char const* input) : Lexer(input) {}
     Token nextToken();
-    std::string const& getTokenName(size_t idx);
 private:
+    bool foresee(std::string const& keyword) const;
+
     void WS();
-    Token NUM();
-    Token NAME();
+    Token GROUP(CheckCb cb, TokenType const tokenType);
+    Token INTEGER_LITERAL();
+    Token KEYWORD(TokenType const tokenType);
+    Token STRING_LITERAL();
 };

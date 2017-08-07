@@ -2,74 +2,92 @@
 
 #include <sstream>
 
-TokenType const NUM_TYPE = { 2, "NUM" };
-TokenType const NAME_TYPE = { 3, "NAME" };
-TokenType const QUOTE_TYPE = { 4, "QUOTE" };
-TokenType const COMMA_TYPE = { 5, "COMMA" };
-TokenType const EXCL_MARK_TYPE = { 6, "EXCL_MARK" };
-
 Token BasicLexer::nextToken()
 {
-    while(!eof())
+    while(LA(1) != EOF_CHAR)
     {
-        if (isWS(peek()))
+        if (isWS(LA(1)))
         {
             WS();
             continue;
         }
-        switch(peek())
+        switch(LA(1))
         {
-            case '\"':
-                consume();
-                return Token("\"", QUOTE_TYPE);
             case ',':
                 consume();
                 return Token(",", COMMA_TYPE);
-            case '!':
+            case '\"':
                 consume();
-                return Token("!", EXCL_MARK_TYPE);
+                return STRING_LITERAL();
             default:
                 break;
         }
-        if (isDigit(peek()))
+        if (isDigit(LA(1)))
         {
-            return NUM();
+            return INTEGER_LITERAL();
         }
-        if (isLetter(peek()))
+        for (auto keyword : KEYWORDS)
         {
-            return NAME();
+            if (foresee(keyword.typeStr))
+            {
+                return KEYWORD(keyword);
+            }
         }
         throw std::invalid_argument("Lexing error.");
     }
     return Token("<EOF>", EOF_TYPE);
 }
 
+bool BasicLexer::foresee(std::string const& keyword) const
+{
+    for (auto idx = 0; idx < keyword.length(); idx++)
+    {
+        if (LA(idx + 1) != keyword.at(idx))
+        {
+            return false;
+        }
+    }
+    return !isLetter(LA(keyword.size() + 1));
+}
+
 void BasicLexer::WS()
 {
-    while(peek() == ' ' || peek() == '\t' || peek() == '\n' || peek() == '\r')
+    while(LA(1) == ' ' || LA(1) == '\t' || LA(1) == '\n' || LA(1) == '\r')
     {
         consume();
     }
 }
 
-Token BasicLexer::NUM()
+Token BasicLexer::INTEGER_LITERAL()
 {
-    std::ostringstream text;
-    do
-    {
-        text << peek();
-        consume();
-    } while(isDigit(peek()));
-    return Token(text.str().c_str(), NUM_TYPE);
+    return GROUP(isDigit, INTEGER_LITERAL_TYPE);
 }
 
-Token BasicLexer::NAME()
+Token BasicLexer::GROUP(CheckCb cb, TokenType const tokenType)
 {
     std::ostringstream text;
     do
     {
-        text << peek();
+        text << LA(1);
         consume();
-    } while(isLetter(peek()));
-    return Token(text.str().c_str(), NAME_TYPE);
+    } while(cb(LA(1)));
+    return Token(text.str().c_str(), tokenType);
+}
+
+Token BasicLexer::KEYWORD(TokenType const tokenType)
+{
+    match(tokenType.typeStr);
+    return Token(tokenType.typeStr, tokenType);
+}
+
+Token BasicLexer::STRING_LITERAL()
+{
+    std::ostringstream text;
+    while(LA(1) != '\"')
+    {
+        text << LA(1);
+        consume();
+    }
+    consume();
+    return Token(text.str().c_str(), STRING_LITERAL_TYPE);
 }
