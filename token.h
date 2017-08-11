@@ -2,7 +2,7 @@
 
 #include "common.h"
 
-#include <cstring>
+#include <string.h>
 
 typedef size_t TokenIdType;
 typedef struct TokenType_ TokenType;

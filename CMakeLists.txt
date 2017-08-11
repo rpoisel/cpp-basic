@@ -7,6 +7,14 @@ add_library(basic_parser STATIC
     parser.cpp
 )
 
+target_compile_options(basic_parser PUBLIC
+    -std=c++11
+)
+
+if (TARGET_PLATFORM STREQUAL "AVR")
+    return ()
+endif ()
+
 add_library(basic_parser_print STATIC
     print.cpp
 )

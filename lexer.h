@@ -8,7 +8,7 @@ template <int k>
 class Lexer
 {
 public:
-    Lexer(char const* input) : input(input), cur(input), end(input + std::strlen(input)) {}
+    Lexer(char const* input) : input(input), cur(input), end(input + ::strlen(input)) {}
     virtual ~Lexer() {}
 
     virtual RC nextToken(Token& token) = 0;
