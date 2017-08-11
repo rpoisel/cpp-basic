@@ -2,9 +2,6 @@
 
 #include "lexer.h"
 
-#include <functional>
-#include <vector>
-
 constexpr TokenType const INTEGER_LITERAL_TYPE { 2, "INTEGER_LITERAL" };
 constexpr TokenType const STRING_LITERAL_TYPE { 3, "STRING_LITERAL" };
 constexpr TokenType const COMMA_TYPE { 4, "COMMA" };
@@ -15,7 +12,7 @@ constexpr TokenType const KEYWORDS[] {
     { 8, "GOTO" },
 };
 
-typedef std::function<bool (char)> CheckCb;
+typedef bool (*CheckCb)(char);
 
 class BasicLexer : public Lexer<6>
 {
@@ -25,9 +22,9 @@ public:
     static inline bool isDigit(char const x) { return x >= '0' && x <= '9'; }
 
     BasicLexer(char const* input) : Lexer(input) {}
-    Token nextToken();
+    RC nextToken(Token& token);
 private:
-    bool foresee(std::string const& keyword) const;
+    bool foresee(char const* keyword) const;
 
     void WS();
     Token GROUP(CheckCb cb, TokenType const tokenType);

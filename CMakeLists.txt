@@ -2,9 +2,13 @@ cmake_minimum_required(VERSION 3.5)
 project(CPP-BASIC)
 
 add_library(basic_parser STATIC
-    lexer.cpp
+    token.cpp
     basic_lexer.cpp
     parser.cpp
+)
+
+add_library(basic_parser_print STATIC
+    print.cpp
 )
 
 add_executable(basic
@@ -13,6 +17,7 @@ add_executable(basic
 
 target_link_libraries(basic PRIVATE
     basic_parser
+    basic_parser_print
 )
 
 add_library(Catch INTERFACE)
@@ -27,6 +32,7 @@ add_executable(basicTestApp
 
 target_link_libraries(basicTestApp PRIVATE
     basic_parser
+    basic_parser_print
     Catch
 )
 

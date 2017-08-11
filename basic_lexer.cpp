@@ -1,58 +1,62 @@
 #include "basic_lexer.h"
 
-#include <sstream>
-
-Token BasicLexer::nextToken()
+RC BasicLexer::nextToken(Token& token)
 {
-    while(LA(1) != EOF_CHAR)
+    while(*LA(1))
     {
-        if (isWS(LA(1)))
+        if (isWS(*LA(1)))
         {
             WS();
             continue;
         }
-        switch(LA(1))
+        switch(*LA(1))
         {
             case ',':
                 consume();
-                return Token(",", COMMA_TYPE);
+                token = Token(LA(1), 1, COMMA_TYPE);
+                return RC_OK;
             case '\"':
                 consume();
-                return STRING_LITERAL();
+                token = STRING_LITERAL();
+                return RC_OK;
             default:
                 break;
         }
-        if (isDigit(LA(1)))
+        if (isDigit(*LA(1)))
         {
-            return INTEGER_LITERAL();
+            token = INTEGER_LITERAL();
+            return RC_OK;
         }
         for (auto keyword : KEYWORDS)
         {
             if (foresee(keyword.typeStr))
             {
-                return KEYWORD(keyword);
+                token = KEYWORD(keyword);
+                return RC_OK;
             }
         }
-        throw std::invalid_argument("Lexing error.");
+        return RC_ERROR;
     }
-    return Token("<EOF>", EOF_TYPE);
+    token = Token(LA(1), EOF_TYPE);
+    return RC_OK;
 }
 
-bool BasicLexer::foresee(std::string const& keyword) const
+bool BasicLexer::foresee(char const* keyword) const
 {
-    for (auto idx = 0; idx < keyword.length(); idx++)
+    size_t idx;
+    for (idx = 0; keyword[idx]; idx++)
     {
-        if (LA(idx + 1) != keyword.at(idx))
+        if (*LA(idx + 1) != keyword[idx])
         {
             return false;
         }
     }
-    return !isLetter(LA(keyword.size() + 1));
+    return !isLetter(*LA(idx + 1));
 }
 
 void BasicLexer::WS()
 {
-    while(LA(1) == ' ' || LA(1) == '\t' || LA(1) == '\n' || LA(1) == '\r')
+    while(*LA(1) == ' ' || *LA(1) == '\t' || *LA(1) == '\n' || *LA(1) == '\r')
     {
         consume();
     }
@@ -65,29 +69,34 @@ Token BasicLexer::INTEGER_LITERAL()
 
 Token BasicLexer::GROUP(CheckCb cb, TokenType const tokenType)
 {
-    std::ostringstream text;
+    Token token(LA(1), tokenType);
     do
     {
-        text << LA(1);
+        token.setLen(token.getLen() + 1);
         consume();
-    } while(cb(LA(1)));
-    return Token(text.str().c_str(), tokenType);
+    } while(cb(*LA(1)));
+    return token;
 }
 
 Token BasicLexer::KEYWORD(TokenType const tokenType)
 {
-    match(tokenType.typeStr);
-    return Token(tokenType.typeStr, tokenType);
+    Token token(LA(1), tokenType);
+
+    size_t len;
+    match(tokenType.typeStr, len);
+    token.setLen(len);
+
+    return token;
 }
 
 Token BasicLexer::STRING_LITERAL()
 {
-    std::ostringstream text;
-    while(LA(1) != '\"')
+    Token token(LA(1), STRING_LITERAL_TYPE);
+    while(*LA(1) != '\"')
     {
-        text << LA(1);
+        token.setLen(token.getLen() + 1);
         consume();
     }
     consume();
-    return Token(text.str().c_str(), STRING_LITERAL_TYPE);
+    return token;
 }

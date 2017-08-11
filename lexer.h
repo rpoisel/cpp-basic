@@ -1,97 +1,62 @@
 #pragma once
 
-#include <sstream>
+#include "token.h"
 
-typedef size_t TokenIdType;
-typedef struct _TokenType TokenType;
-struct _TokenType
-{
-    TokenType& operator=(TokenType const& other);
-    TokenIdType typeId;
-    char const* typeStr;
-};
-
-constexpr TokenType const NA_TYPE { 0, "n/a" };
-constexpr TokenType const EOF_TYPE { 1, "EOF" };
-
-constexpr char const EOF_CHAR = -1;
-
-class Token
-{
-public:
-    Token(char const* te, TokenType const ty) : text(te), type(ty) {}
-    Token(Token const& other);
-
-    Token& operator=(Token&& other);
-
-    std::string text;
-    TokenType type;
-};
-std::ostream & operator<<(std::ostream &os, Token const &token);
+#include <string.h>
 
 template <int k>
 class Lexer
 {
 public:
-    Lexer(char const* input);
+    Lexer(char const* input) : input(input), cur(input), end(input + std::strlen(input)) {}
     virtual ~Lexer() {}
 
-    virtual Token nextToken() = 0;
+    virtual RC nextToken(Token& token) = 0;
 
-    void match(char const x);
-    void match(std::string const& str);
-    char LA(size_t i) const { return lookahead[(p + i - 1) % k]; }
+    RC match(char const x);
+    RC match(char const* str, size_t& cnt);
+    char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
     void consume();
 private:
 
     char const* const input;
     char const* cur;
-    char lookahead[k];
-    size_t p;
+    char const* end;
 };
-
-template <int k>
-Lexer<k>::Lexer(char const* input) : input(input), cur(input), p(0)
-{
-    for(auto i = 0; i < sizeof(lookahead) / sizeof(lookahead[0]); i++)
-    {
-        consume();
-    }
-}
 
 template <int k>
 void Lexer<k>::consume()
 {
-    if (!*cur)
+    if (cur == end)
     {
-        lookahead[p] = EOF_CHAR;
-    }
-    else
-    {
-        lookahead[p] = *cur;
-        cur++;
-    }
-    p = (p + 1) % k;
-}
-
-template <int k>
-void Lexer<k>::match(char const x)
-{
-    if (LA(1) == x)
-    {
-        consume();
         return;
     }
-    std::ostringstream errorMsg;
-    errorMsg << "expecting " << x << ", found " << LA(1);
-    throw std::invalid_argument(errorMsg.str());
+    cur++;
 }
 
 template <int k>
-void Lexer<k>::match(std::string const& str)
+RC Lexer<k>::match(char const x)
 {
-    for (auto idx = 0; idx < str.size(); idx++)
+    if (*LA(1) == x)
     {
-        match(str.at(idx));
+        consume();
+        return RC_OK;
     }
+    return RC_ERROR;
+}
+
+template <int k>
+RC Lexer<k>::match(char const* str, size_t& cnt)
+{
+    cnt = 0;
+    for (auto cur = str; *cur; cur++)
+    {
+        RC rc = match(*cur);
+        if (RC_FAILED(rc))
+        {
+            return rc;
+        }
+        cnt++;
+    }
+    return RC_OK;
 }
