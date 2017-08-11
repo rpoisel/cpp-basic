@@ -14,8 +14,10 @@ struct TokenType_
     bool operator==(TokenType const& rhs) const;
 };
 
-constexpr TokenType const NA_TYPE { 0, "n/a"};
-constexpr TokenType const EOF_TYPE { 1, "EOF"};
+constexpr size_t const NA_TYPE_ID = 0;
+constexpr size_t const EOF_TYPE_ID = 0;
+constexpr TokenType const NA_TYPE { NA_TYPE_ID, "n/a"};
+constexpr TokenType const EOF_TYPE { EOF_TYPE_ID, "EOF"};
 
 class Token
 {

@@ -2,14 +2,23 @@
 
 #include "lexer.h"
 
-constexpr TokenType const INTEGER_LITERAL_TYPE { 2, "INTEGER_LITERAL" };
-constexpr TokenType const STRING_LITERAL_TYPE { 3, "STRING_LITERAL" };
-constexpr TokenType const COMMA_TYPE { 4, "COMMA" };
+constexpr size_t const INTEGER_LITERAL_TYPE_ID = 2;
+constexpr size_t const STRING_LITERAL_TYPE_ID = 3;
+constexpr size_t const COMMA_TYPE_ID = 4;
+constexpr size_t const PRINT_TYPE_ID = 5;
+constexpr size_t const REM_TYPE_ID = 6;
+constexpr size_t const GOTO_TYPE_ID = 7;
+constexpr TokenType const INTEGER_LITERAL_TYPE { INTEGER_LITERAL_TYPE_ID, "INTEGER_LITERAL" };
+constexpr TokenType const STRING_LITERAL_TYPE { STRING_LITERAL_TYPE_ID, "STRING_LITERAL" };
+constexpr TokenType const COMMA_TYPE { COMMA_TYPE_ID, "COMMA" };
 
+constexpr size_t const PRINT_IDX = 0;
+constexpr size_t const REM_IDX = 1;
+constexpr size_t const GOTO_IDX = 2;
 constexpr TokenType const KEYWORDS[] {
-    { 6, "PRINT" },
-    { 7, "REM" },
-    { 8, "GOTO" },
+    { PRINT_TYPE_ID, "PRINT" },
+    { REM_TYPE_ID, "REM" },
+    { GOTO_TYPE_ID, "GOTO" },
 };
 
 typedef bool (*CheckCb)(char);

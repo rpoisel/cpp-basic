@@ -27,7 +27,7 @@ SCENARIO("Parsing a print statement", "[basic]")
             char const* sourceCode = "10 PRINT \"Hello, World!\"";
             std::vector<Token> expectedTokens {
                 { sourceCode + 0,  2,  INTEGER_LITERAL_TYPE },
-                { sourceCode + 3,  5,  KEYWORDS[0] },
+                { sourceCode + 3,  5,  KEYWORDS[PRINT_IDX] },
                 { sourceCode + 10, 13, STRING_LITERAL_TYPE }
             };
             THEN("List of tokens should be as expected")
@@ -42,9 +42,9 @@ SCENARIO("Parsing a print statement", "[basic]")
             char const* sourceCode = "10 PRINT \"Hello, World!\"GOTO";
             std::vector<Token> expectedTokens {
                 { sourceCode + 0,  2,  INTEGER_LITERAL_TYPE },
-                { sourceCode + 3,  5,  KEYWORDS[0] },
+                { sourceCode + 3,  5,  KEYWORDS[PRINT_IDX] },
                 { sourceCode + 10, 13, STRING_LITERAL_TYPE },
-                { sourceCode + 24, 4,  KEYWORDS[2] }
+                { sourceCode + 24, 4,  KEYWORDS[GOTO_IDX] }
             };
             THEN("List of tokens should be as expected")
             {
