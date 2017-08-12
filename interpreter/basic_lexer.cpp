@@ -11,9 +11,9 @@ RC BasicLexer::nextToken(Token& token)
         }
         switch(*LA(1))
         {
-            case ',':
+            case '\n':
                 consume();
-                token = Token(LA(1), 1, COMMA_TYPE);
+                token = Token(LA(1), 1, NEWLINE_TYPE);
                 return RC_OK;
             case '\"':
                 consume();

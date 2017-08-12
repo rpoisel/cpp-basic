@@ -6,7 +6,7 @@
 
 #include <vector>
 
-static void parseSourceCode(char const* sourceCode, std::vector<Token>& actualTokenIds)
+static void lexSourceCode(char const* sourceCode, std::vector<Token>& actualTokenIds)
 {
     BasicLexer lexer(sourceCode);
     Token token;
@@ -18,7 +18,7 @@ static void parseSourceCode(char const* sourceCode, std::vector<Token>& actualTo
     }
 }
 
-SCENARIO("Parsing a print statement", "[basic]")
+SCENARIO("Parsing a print statement", "[lexer]")
 {
     GIVEN("Source code fragment")
     {
@@ -33,7 +33,7 @@ SCENARIO("Parsing a print statement", "[basic]")
             THEN("List of tokens should be as expected")
             {
                 std::vector<Token> actualTokens;
-                parseSourceCode(sourceCode, actualTokens);
+                lexSourceCode(sourceCode, actualTokens);
                 REQUIRE(expectedTokens == actualTokens);
             }
         }
@@ -49,7 +49,7 @@ SCENARIO("Parsing a print statement", "[basic]")
             THEN("List of tokens should be as expected")
             {
                 std::vector<Token> actualTokens;
-                parseSourceCode(sourceCode, actualTokens);
+                lexSourceCode(sourceCode, actualTokens);
                 REQUIRE(expectedTokens == actualTokens);
             }
         }

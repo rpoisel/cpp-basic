@@ -1,5 +1,4 @@
-#include "basic_lexer.h"
-#include "parser.h"
+#include "basic_parser.h"
 #include "print.h"
 
 #include <cstdio>
@@ -28,12 +27,6 @@ int main(int argc, char* argv[])
     char buf[1024];
     readInput(buf, sizeof(buf));
     BasicLexer lexer(buf);
-    Token token;
-    lexer.nextToken(token);
-    while(token.getType().typeId != EOF_TYPE.typeId)
-    {
-        std::cout << token << std::endl;
-        lexer.nextToken(token);
-    }
-    return 0;
+    BasicParser parser(lexer);
+    return RC_SUCCEEDED(parser.parse()) ? 0 : 1;
 }
