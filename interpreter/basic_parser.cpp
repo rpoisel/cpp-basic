@@ -10,12 +10,22 @@ BasicParser::BasicParser(BasicLexer& lexer) : lexer(lexer), p(0)
 
 RC BasicParser::parse()
 {
+    return parse(nullptr);
+}
+
+RC BasicParser::parse(BasicInterpreter* interpreter)
+{
     RC rc;
     do
     {
-        rc = line();
+        rc = line(interpreter);
     } while (RC_SUCCEEDED(rc) && rc != RC_FINISH);
     return rc;
+}
+
+RC BasicParser::parse(BasicInterpreter& interpreter)
+{
+    return parse(&interpreter);
 }
 
 void BasicParser::consume()
@@ -34,7 +44,7 @@ RC BasicParser::match(TokenType const& tokenType)
     return RC_ERROR;
 }
 
-RC BasicParser::line()
+RC BasicParser::line(BasicInterpreter* interpreter)
 {
     if (LA(1).getType() == EOF_TYPE)
     {
@@ -46,13 +56,17 @@ RC BasicParser::line()
     {
         // ignore line number for the moment
         // TODO; add line number to jumplist
+        if (interpreter)
+        {
+            interpreter->addJumplistEntry(10, nullptr);
+        }
         rc = match(INTEGER_LITERAL_TYPE);
         if (RC_FAILED(rc))
         {
             return rc;
         }
     }
-    rc = statement();
+    rc = statement(interpreter);
     if (RC_FAILED(rc))
     {
         return rc;
@@ -65,13 +79,14 @@ RC BasicParser::line()
     return RC_OK;
 }
 
-RC BasicParser::statement()
+RC BasicParser::statement(BasicInterpreter* interpreter)
 {
     if (LA(1).getType() == KEYWORDS[PRINT_IDX])
     {
         consume();
         if (LA(1).getType() == STRING_LITERAL_TYPE)
         {
+            interpreter->printStatement(LA(1));
             consume();
             return RC_OK;
         }

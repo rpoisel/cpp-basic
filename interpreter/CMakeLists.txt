@@ -3,6 +3,7 @@ add_library(basic_parser STATIC
     lexer.cpp
     basic_lexer.cpp
     basic_parser.cpp
+    basic_interpreter.cpp
 )
 
 target_include_directories(basic_parser INTERFACE

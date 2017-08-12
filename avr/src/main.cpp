@@ -1,4 +1,5 @@
 #include <basic_parser.h>
+#include <basic_interpreter.h>
 
 #include <Arduino.h>
 
@@ -15,5 +16,6 @@ void loop()
 {
     BasicLexer lexer(basic_prog);
     BasicParser parser(lexer);
-    parser.parse();
+    BasicInterpreter interpreter;
+    parser.parse(interpreter);
 }

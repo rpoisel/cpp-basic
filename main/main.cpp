@@ -28,5 +28,6 @@ int main(int argc, char* argv[])
     readInput(buf, sizeof(buf));
     BasicLexer lexer(buf);
     BasicParser parser(lexer);
-    return RC_SUCCEEDED(parser.parse()) ? 0 : 1;
+    BasicInterpreter interpreter;
+    return RC_SUCCEEDED(parser.parse(interpreter)) ? 0 : 1;
 }

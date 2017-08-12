@@ -1,4 +1,5 @@
 #include "basic_parser.h"
+#include "basic_interpreter.h"
 
 #define CATCH_CONFIG_MAIN
 #include <catch.hpp>
@@ -16,7 +17,8 @@ SCENARIO("Parsing a basic snippet", "[parser]")
             {
                 BasicLexer lexer(sourceCode);
                 BasicParser parser(lexer);
-                RC rc = parser.parse();
+                BasicInterpreter interpreter;
+                RC rc = parser.parse(interpreter);
                 REQUIRE(rc == RC_FINISH);
             }
         }
