@@ -19,12 +19,71 @@ RC BasicLexer::nextToken(Token& token)
                 consume();
                 token = STRING_LITERAL();
                 return RC_OK;
+            case '+':
+                consume();
+                token = Token(LA(1), 1, PLUS_TYPE);
+                return RC_OK;
+            case '-':
+                consume();
+                token = Token(LA(1), 1, MINUS_TYPE);
+                return RC_OK;
+            case '*':
+                consume();
+                token = Token(LA(1), 1, ASTERISK_TYPE);
+                return RC_OK;
+            case '/':
+                consume();
+                token = Token(LA(1), 1, DIVIDER_TYPE);
+                return RC_OK;
+            case '=':
+                consume();
+                token = Token(LA(1), 1, EQUAL_TYPE);
+                return RC_OK;
             default:
                 break;
         }
         if (isDigit(*LA(1)))
         {
             token = INTEGER_LITERAL();
+            return RC_OK;
+        }
+        if (isLetter(*LA(1)) && !isLetter(*LA(2)))
+        {
+            token = Token(LA(1), 1, VAR_TYPE);
+            consume();
+            return RC_OK;
+        }
+        if (*LA(1) == '<' && *LA(2) != '=' && *LA(2) != '>')
+        {
+            token = Token(LA(1), 1, LT_TYPE);
+            consume();
+            return RC_OK;
+        }
+        if (*LA(1) == '<' && *LA(2) == '=')
+        {
+            token = Token(LA(1), 2, LE_TYPE);
+            consume();
+            consume();
+            return RC_OK;
+        }
+        if (*LA(1) == '>' && *LA(2) != '=')
+        {
+            token = Token(LA(1), 1, GT_TYPE);
+            consume();
+            return RC_OK;
+        }
+        if (*LA(1) == '>' && *LA(2) == '=')
+        {
+            token = Token(LA(1), 2, GE_TYPE);
+            consume();
+            consume();
+            return RC_OK;
+        }
+        if (*LA(1) == '<' && *LA(2) == '>')
+        {
+            token = Token(LA(1), 2, NEQ_TYPE);
+            consume();
+            consume();
             return RC_OK;
         }
         for (auto keyword : KEYWORDS)

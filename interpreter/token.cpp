@@ -31,6 +31,15 @@ Token& Token::operator=(Token&& other)
     return *this;
 }
 
+Token& Token::operator=(Token const& other)
+{
+    this->text = other.text;
+    this->len = other.len;
+    this->type = other.type;
+
+    return *this;
+}
+
 bool Token::operator==(Token const& rhs) const
 {
     return this->text == rhs.text && this->len == rhs.len && this->type == rhs.type;

@@ -12,11 +12,12 @@ public:
 
     virtual RC nextToken(Token& token) = 0;
 
-protected:
+    char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
+    void setCur(char const* newCur) { cur = newCur; }
 
+protected:
     RC match(char const x);
     RC match(char const* str, size_t& cnt);
-    char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
     void consume();
 
 private:

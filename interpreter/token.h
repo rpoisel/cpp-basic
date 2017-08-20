@@ -1,6 +1,6 @@
 #pragma once
 
-#include "common.h"
+#include "basic_common.h"
 
 #include <string.h>
 
@@ -28,6 +28,7 @@ public:
     Token(Token const& other);
 
     Token& operator=(Token&& other);
+    Token& operator=(Token const& other);
     bool operator==(Token const& rhs) const;
 
     char const* getText() const { return text; }

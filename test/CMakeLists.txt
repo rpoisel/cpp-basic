@@ -18,13 +18,14 @@ target_link_libraries(lexerTestApp PRIVATE
 
 ParseAndAddCatchTests(lexerTestApp)
 
-add_executable(parserTestApp
-    test_parser.cpp
+add_executable(interpreterTestApp
+    test_interpreter.cpp
 )
 
-target_link_libraries(parserTestApp PRIVATE
+target_link_libraries(interpreterTestApp PRIVATE
     basic_parser_print
+    posix_facilities
     Catch
 )
 
-ParseAndAddCatchTests(parserTestApp)
+ParseAndAddCatchTests(interpreterTestApp)

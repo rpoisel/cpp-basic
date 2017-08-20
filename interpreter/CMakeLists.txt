@@ -1,8 +1,9 @@
 add_library(basic_parser STATIC
     token.cpp
     lexer.cpp
+    basic_variant.cpp
+    basic_lines.cpp
     basic_lexer.cpp
-    basic_parser.cpp
     basic_interpreter.cpp
 )
 
