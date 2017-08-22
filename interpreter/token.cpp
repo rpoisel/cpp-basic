@@ -2,19 +2,6 @@
 
 #include <string.h>
 
-TokenType& TokenType::operator=(TokenType const& other)
-{
-    this->typeId = other.typeId;
-    this->typeStr = other.typeStr;
-
-    return *this;
-}
-
-bool TokenType::operator==(TokenType const& rhs) const
-{
-    return this->typeId == rhs.typeId;
-}
-
 Token::Token(Token const& other)
 {
     this->text = other.text;

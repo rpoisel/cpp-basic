@@ -126,7 +126,7 @@ Token BasicLexer::INTEGER_LITERAL()
     return GROUP(isDigit, INTEGER_LITERAL_TYPE);
 }
 
-Token BasicLexer::GROUP(CheckCb cb, TokenType const tokenType)
+Token BasicLexer::GROUP(CheckCb cb, TokenIdType const& tokenType)
 {
     Token token(LA(1), tokenType);
     do
@@ -137,9 +137,9 @@ Token BasicLexer::GROUP(CheckCb cb, TokenType const tokenType)
     return token;
 }
 
-Token BasicLexer::KEYWORD(TokenType const tokenType)
+Token BasicLexer::KEYWORD(KeywordTokenType const& tokenType)
 {
-    Token token(LA(1), tokenType);
+    Token token(LA(1), tokenType.typeId);
 
     size_t len;
     match(tokenType.typeStr, len);

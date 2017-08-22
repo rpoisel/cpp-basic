@@ -18,7 +18,7 @@ public:
 
 protected:
     Token& LA(size_t i) { return lookahead[(p + i - 1) % K]; }
-    RC match(TokenType const& tokenType);
+    RC match(TokenIdType const& tokenType);
     void consume();
 
 private:

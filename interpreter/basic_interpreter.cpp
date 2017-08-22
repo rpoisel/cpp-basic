@@ -36,7 +36,7 @@ void BasicInterpreter::setCur(char const* cur)
     }
 }
 
-RC BasicInterpreter::match(TokenType const& tokenType)
+RC BasicInterpreter::match(TokenIdType const& tokenType)
 {
     if (LA(1).getType() == tokenType)
     {
@@ -97,7 +97,7 @@ RC BasicInterpreter::if_statement()
 
     if (conditionResult)
     {
-        if (!(LA(1).getType() == KEYWORDS[THEN_IDX]))
+        if (!(LA(1).getType() == KEYWORDS[THEN_IDX].typeId))
         {
             rc = RC_ERROR;
             return false;
@@ -187,7 +187,7 @@ RC BasicInterpreter::while_statement()
             {
                 return RC_CONTINUE;
             }
-        } while(RC_SUCCEEDED(rc) && !(LA(1).getType() == KEYWORDS[WEND_IDX]));
+        } while(RC_SUCCEEDED(rc) && !(LA(1).getType() == KEYWORDS[WEND_IDX].typeId));
         setCur(conditionPosition);
         conditionResult = condition(rc);
         if (RC_FAILED(rc))
@@ -200,7 +200,7 @@ RC BasicInterpreter::while_statement()
             return rc;
         }
     }
-    while(!(LA(1).getType() == KEYWORDS[WEND_IDX]))
+    while(!(LA(1).getType() == KEYWORDS[WEND_IDX].typeId))
     {
         consume();
     }
@@ -228,23 +228,23 @@ RC BasicInterpreter::goto_statement()
 
 RC BasicInterpreter::statement()
 {
-    if (LA(1).getType() == KEYWORDS[PRINT_IDX])
+    if (LA(1).getType() == KEYWORDS[PRINT_IDX].typeId)
     {
         return print_statement();
     }
-    else if (LA(1).getType() == KEYWORDS[IF_IDX])
+    else if (LA(1).getType() == KEYWORDS[IF_IDX].typeId)
     {
         return if_statement();
     }
-    else if (LA(1).getType() == KEYWORDS[WHILE_IDX])
+    else if (LA(1).getType() == KEYWORDS[WHILE_IDX].typeId)
     {
         return while_statement();
     }
-    else if (LA(1).getType() == KEYWORDS[GOTO_IDX])
+    else if (LA(1).getType() == KEYWORDS[GOTO_IDX].typeId)
     {
         return goto_statement();
     }
-    else if (LA(1).getType() == KEYWORDS[LET_IDX])
+    else if (LA(1).getType() == KEYWORDS[LET_IDX].typeId)
     {
         return let_statement();
     }
