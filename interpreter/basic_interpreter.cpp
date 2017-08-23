@@ -25,9 +25,9 @@ void BasicInterpreter::consume()
     p = (p + 1) % K;
 }
 
-void BasicInterpreter::setCur(char const* cur)
+void BasicInterpreter::reset(char const* cur)
 {
-    lexer.setCur(cur);
+    lexer.reset(cur);
 
     p = 0;
     for (size_t idx = 0; idx < K; idx++)
@@ -53,64 +53,17 @@ RC BasicInterpreter::line()
         return RC_FINISH;
     }
 
-    RC rc;
     if (LA(1).getType() == INTEGER_LITERAL_TYPE)
     {
-        rc = match(INTEGER_LITERAL_TYPE);
-        if (RC_FAILED(rc))
-        {
-            return rc;
-        }
+        consume();
+        return RC_OK;
     }
-    rc = statement();
+    RC rc = statement();
     if (RC_FAILED(rc) || rc == RC_CONTINUE)
     {
         return rc;
     }
     return match(NEWLINE_TYPE);
-}
-
-RC BasicInterpreter::print_statement()
-{
-    consume();
-    RC rc;
-    BasicVariant result = expressionList(rc);
-    if (RC_SUCCEEDED(rc))
-    {
-        facilities.print(result);
-        return RC_OK;
-    }
-    return RC_ERROR;
-}
-
-RC BasicInterpreter::if_statement()
-{
-    consume();
-    RC rc;
-
-    bool conditionResult = condition(rc);
-
-    if (RC_FAILED(rc))
-    {
-        return rc;
-    }
-
-    if (conditionResult)
-    {
-        if (!(LA(1).getType() == KEYWORDS[THEN_IDX].typeId))
-        {
-            rc = RC_ERROR;
-            return false;
-        }
-        consume();
-        return statement();
-    }
-
-    while(!(LA(1).getType() == NEWLINE_TYPE))
-    {
-        consume();
-    }
-    return RC_OK;
 }
 
 bool BasicInterpreter::condition(RC& rc)
@@ -160,122 +113,9 @@ bool BasicInterpreter::condition(RC& rc)
     return conditionResult;
 }
 
-RC BasicInterpreter::while_statement()
-{
-    consume();
-    char const* conditionPosition = LA(1).getText();
-    RC rc;
-    bool conditionResult = condition(rc);
-
-    if (RC_FAILED(rc))
-    {
-        return rc;
-    }
-
-    rc = match(NEWLINE_TYPE);
-    if (RC_FAILED(rc))
-    {
-        return rc;
-    }
-
-    while (conditionResult)
-    {
-        do
-        {
-            rc = line();
-            if (rc == RC_CONTINUE)
-            {
-                return RC_CONTINUE;
-            }
-        } while(RC_SUCCEEDED(rc) && !(LA(1).getType() == KEYWORDS[WEND_IDX].typeId));
-        setCur(conditionPosition);
-        conditionResult = condition(rc);
-        if (RC_FAILED(rc))
-        {
-            return rc;
-        }
-        rc = match(NEWLINE_TYPE);
-        if (RC_FAILED(rc))
-        {
-            return rc;
-        }
-    }
-    while(!(LA(1).getType() == KEYWORDS[WEND_IDX].typeId))
-    {
-        consume();
-    }
-    consume();
-    return RC_OK;
-}
-
-RC BasicInterpreter::goto_statement()
-{
-    consume();
-
-    if (!(LA(1).getType() == INTEGER_LITERAL_TYPE))
-    {
-        return RC_ERROR;
-    }
-    char const* pos = lines.search(LA(1));
-    lexer.setCur(pos);
-    for (size_t idx = 0; idx < K; idx++)
-    {
-        consume();
-    }
-
-    return RC_CONTINUE;
-}
-
 RC BasicInterpreter::statement()
 {
-    if (LA(1).getType() == KEYWORDS[PRINT_IDX].typeId)
-    {
-        return print_statement();
-    }
-    else if (LA(1).getType() == KEYWORDS[IF_IDX].typeId)
-    {
-        return if_statement();
-    }
-    else if (LA(1).getType() == KEYWORDS[WHILE_IDX].typeId)
-    {
-        return while_statement();
-    }
-    else if (LA(1).getType() == KEYWORDS[GOTO_IDX].typeId)
-    {
-        return goto_statement();
-    }
-    else if (LA(1).getType() == KEYWORDS[LET_IDX].typeId)
-    {
-        return let_statement();
-    }
-    return RC_ERROR;
-}
-
-RC BasicInterpreter::let_statement()
-{
-        consume();
-        if (!(LA(1).getType() == VAR_TYPE))
-        {
-            return RC_ERROR;
-        }
-        char varName = *(LA(1)).getText();
-        if (BasicLexer::isUppercaseLetter(varName))
-        {
-            varName = (varName - 'A') + 'a';
-        }
-        consume();
-        if (!(LA(1).getType() == EQUAL_TYPE))
-        {
-            return RC_ERROR;
-        }
-        consume();
-        if (!isExpression(1))
-        {
-            return RC_ERROR;
-        }
-        RC rc;
-        variables[static_cast<size_t>(varName)] = expression(rc);
-        return rc;
+    return basicCommandRegistry.handleStatement(this);
 }
 
 BasicVariant BasicInterpreter::expressionList(RC& rc)
@@ -290,7 +130,7 @@ BasicVariant BasicInterpreter::expressionList(RC& rc)
     return BasicVariant(expression(rc));
 }
 
-bool BasicInterpreter::isExpression(size_t offset)
+bool BasicInterpreter::isExpression(size_t offset) const
 {
     return LA(1).getType() == PLUS_TYPE || LA(1).getType() == MINUS_TYPE || isTerm(offset);
 }
@@ -319,7 +159,7 @@ ExpressionNumberValue BasicInterpreter::expression(RC& rc)
     return result - expression(rc);
 }
 
-bool BasicInterpreter::isTerm(size_t offset)
+bool BasicInterpreter::isTerm(size_t offset) const
 {
     return isFactor(offset);
 }
@@ -344,7 +184,7 @@ ExpressionNumberValue BasicInterpreter::term(RC& rc)
     return result;
 }
 
-bool BasicInterpreter::isFactor(size_t offset)
+bool BasicInterpreter::isFactor(size_t offset) const
 {
     return LA(offset).getType() == VAR_TYPE || LA(offset).getType() == INTEGER_LITERAL_TYPE;
 }
@@ -377,9 +217,18 @@ ExpressionNumberValue BasicInterpreter::factor(RC& rc)
     return -1;
 }
 
-bool BasicInterpreter::isRelOp(size_t offset)
+bool BasicInterpreter::isRelOp(size_t offset) const
 {
     return LA(offset).getType() == LT_TYPE || LA(offset).getType() == LE_TYPE
         || LA(offset).getType() == GT_TYPE || LA(offset).getType() == GE_TYPE
         || LA(offset).getType() == EQUAL_TYPE || LA(offset).getType() == NEQ_TYPE;
+}
+
+char const* BasicInterpreter::searchLine(Token const& token) const
+{
+    if (!(LA(1).getType() == INTEGER_LITERAL_TYPE))
+    {
+        return nullptr;
+    }
+    return lines.search(token);
 }

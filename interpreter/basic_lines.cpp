@@ -40,7 +40,7 @@ void BasicLines::parse(char const* sourceCode)
     }
 }
 
-char const* BasicLines::search(Token const& jumpTarget)
+char const* BasicLines::search(Token const& jumpTarget) const
 {
     if (!(jumpTarget.getType() == INTEGER_LITERAL_TYPE))
     {

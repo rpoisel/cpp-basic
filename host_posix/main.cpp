@@ -47,12 +47,13 @@ int main(void)
          "41 LET B = 2\n"
          "42 WHILE B > 0\n"
          "43 PRINT \"B = \"\n"
-         "44 PRINT B\n"
+         "44 PRINT A + B * 2 + 1\n"
          "45 PRINT \"\n\"\n"
          "46 LET B = B - 1\n"
          "50 WEND\n"
-         "60 IF A = 1 THEN GOTO 100\n"
+         "60 IF A = 1 THEN GOTO 80\n"
          "70 WEND\n"
+         "80 REM This should be ignored.\n"
          "100 PRINT \"END\n\"\n";
     PosixFacilities facilities;
     BasicInterpreter interpreter(sourceCode, facilities);

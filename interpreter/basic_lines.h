@@ -9,7 +9,7 @@ class BasicLines
 public:
     BasicLines(char const* sourceCode);
 
-    char const* search(Token const& jumpTarget);
+    char const* search(Token const& jumpTarget) const;
 private:
     struct BasicLine
     {

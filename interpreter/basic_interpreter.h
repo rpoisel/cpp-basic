@@ -1,5 +1,6 @@
 #pragma once
 
+#include "basic_commands.h"
 #include "basic_facilities.h"
 #include "basic_lexer.h"
 #include "basic_lines.h"
@@ -14,12 +15,22 @@ public:
     RC run();
     BasicLexer& getLexer() { return lexer; }
 
-    void setCur(char const* cur);
-
-protected:
-    Token& LA(size_t i) { return lookahead[(p + i - 1) % K]; }
-    RC match(TokenIdType const& tokenType);
+    void reset(char const* cur);
     void consume();
+    RC match(TokenIdType const& tokenType);
+    Token const& LA(size_t const i) const { return lookahead[(p + i - 1) % K]; }
+
+    BasicFacilities& getFacilities() const { return facilities; }
+    void setVarValue(size_t idx, ExpressionNumberValue value) { variables[idx] = value; }
+    char const* searchLine(Token const& token) const;
+
+    bool isExpression(size_t offset) const;
+
+    RC line();
+    RC statement();
+    BasicVariant expressionList(RC& rc);
+    ExpressionNumberValue expression(RC& rc);
+    bool condition(RC& rc);
 
 private:
     BasicLexer lexer;
@@ -29,21 +40,11 @@ private:
     size_t p;
     ExpressionNumberValue variables[26];
 
-    RC line();
-    RC statement();
-    RC print_statement();
-    RC if_statement();
-    RC while_statement();
-    RC goto_statement();
-    RC let_statement();
-    bool condition(RC& rc);
-    BasicVariant expressionList(RC& rc);
-    ExpressionNumberValue expression(RC& rc);
+    bool isTerm(size_t offset) const;
+    bool isFactor(size_t offset) const;
+    bool isRelOp(size_t offset) const;
+
     ExpressionNumberValue term(RC& rc);
     ExpressionNumberValue factor(RC& rc);
-
-    bool isExpression(size_t offset);
-    bool isTerm(size_t offset);
-    bool isFactor(size_t offset);
-    bool isRelOp(size_t offset);
 };
+

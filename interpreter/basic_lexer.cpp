@@ -94,7 +94,9 @@ RC BasicLexer::nextToken(Token& token)
                 return RC_OK;
             }
         }
-        return RC_ERROR;
+        token = Token(LA(1), 1, NA_TYPE);
+        consume();
+        return RC_OK;
     }
     token = Token(LA(1), EOF_TYPE);
     return RC_OK;

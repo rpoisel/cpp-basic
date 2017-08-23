@@ -23,7 +23,7 @@ constexpr TokenIdType const LET_TYPE = 0x83;
 constexpr TokenIdType const IF_TYPE = 0x84;
 constexpr TokenIdType const THEN_TYPE = 0x85;
 constexpr TokenIdType const WHILE_TYPE = 0x86;
-constexpr TokenIdType const WEND_TYPE=0x87;
+constexpr TokenIdType const WEND_TYPE = 0x87;
 
 struct KeywordTokenType
 {
@@ -31,14 +31,6 @@ struct KeywordTokenType
     char const* typeStr;
 };
 
-constexpr size_t const PRINT_IDX = 0;
-constexpr size_t const REM_IDX = 1;
-constexpr size_t const GOTO_IDX = 2;
-constexpr size_t const LET_IDX = 3;
-constexpr size_t const IF_IDX = 4;
-constexpr size_t const THEN_IDX = 5;
-constexpr size_t const WHILE_IDX = 6;
-constexpr size_t const WEND_IDX = 7;
 constexpr KeywordTokenType const KEYWORDS[] {
     { PRINT_TYPE, "PRINT" },
     { REM_TYPE, "REM" },

@@ -13,7 +13,7 @@ public:
     virtual RC nextToken(Token& token) = 0;
 
     char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
-    void setCur(char const* newCur) { cur = newCur; }
+    void reset(char const* newCur) { cur = newCur; }
 
 protected:
     RC match(char const x);
