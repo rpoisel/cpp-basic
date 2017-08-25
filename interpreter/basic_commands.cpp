@@ -2,16 +2,6 @@
 #include "basic_interpreter.h"
 #include "basic_lexer.h"
 
-class BasicCommand
-{
-public:
-    constexpr BasicCommand(TokenIdType const& tokenId) : tokenId(tokenId) {}
-    virtual RC execute(BasicInterpreter* const interpreter) const = 0;
-    constexpr TokenIdType const& getTokenId() const { return tokenId; }
-private:
-    TokenIdType const& tokenId;
-};
-
 class PrintCommand : public BasicCommand
 {
 public:
@@ -201,7 +191,7 @@ constexpr static const RemCommand remCommand;
 constexpr static const WhileCommand whileCommand;
 constexpr static const IfCommand ifCommand;
 
-constexpr const BasicCommandRegistry basicCommandRegistry;
+const BasicCommandRegistry basicCommandRegistry;
 
 constexpr static BasicCommand const* const basicCommands[] = {
     &whileCommand,

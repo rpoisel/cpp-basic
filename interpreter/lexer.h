@@ -10,7 +10,7 @@ public:
     Lexer(char const* input) : input(input), cur(input), end(input + ::strlen(input)) {}
     virtual ~Lexer() {}
 
-    virtual RC nextToken(Token& token) = 0;
+    virtual Token nextToken(RC& rc) = 0;
 
     char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
     void reset(char const* newCur) { cur = newCur; }

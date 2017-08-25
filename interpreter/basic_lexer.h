@@ -54,7 +54,7 @@ public:
     constexpr static inline bool isDigit(char const x) { return x >= '0' && x <= '9'; }
 
     BasicLexer(char const* input) : Lexer(input) {}
-    RC nextToken(Token& token);
+    Token nextToken(RC& rc);
 private:
     bool foresee(char const* keyword) const;
 

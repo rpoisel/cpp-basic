@@ -21,7 +21,8 @@ RC BasicInterpreter::run()
 
 void BasicInterpreter::consume()
 {
-    lexer.nextToken(lookahead[p]);
+    RC rc;
+    lookahead[p] = lexer.nextToken(rc);
     p = (p + 1) % K;
 }
 

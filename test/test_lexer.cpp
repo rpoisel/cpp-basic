@@ -8,13 +8,13 @@
 
 static void lexSourceCode(char const* sourceCode, std::vector<Token>& actualTokenIds)
 {
+    RC rc;
     BasicLexer lexer(sourceCode);
-    Token token;
-    lexer.nextToken(token);
+    Token token = lexer.nextToken(rc);
     while(token.getType() != EOF_TYPE)
     {
         actualTokenIds.push_back(token);
-        lexer.nextToken(token);
+        token = lexer.nextToken(rc);
     }
 }
 

@@ -1,7 +1,8 @@
 #include "basic_lexer.h"
 
-RC BasicLexer::nextToken(Token& token)
+Token BasicLexer::nextToken(RC& rc)
 {
+    Token result;
     while(*LA(1))
     {
         if (isWS(*LA(1)))
@@ -12,95 +13,109 @@ RC BasicLexer::nextToken(Token& token)
         switch(*LA(1))
         {
             case '\n':
-                token = Token(LA(1), 1, NEWLINE_TYPE);
+                result = Token(LA(1), 1, NEWLINE_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '\"':
                 consume();
-                token = STRING_LITERAL();
+                result = STRING_LITERAL();
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '+':
-                token = Token(LA(1), 1, PLUS_TYPE);
+                result = Token(LA(1), 1, PLUS_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '-':
-                token = Token(LA(1), 1, MINUS_TYPE);
+                result = Token(LA(1), 1, MINUS_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '*':
-                token = Token(LA(1), 1, ASTERISK_TYPE);
+                result = Token(LA(1), 1, ASTERISK_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '/':
-                token = Token(LA(1), 1, DIVIDER_TYPE);
+                result = Token(LA(1), 1, DIVIDER_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             case '=':
-                token = Token(LA(1), 1, EQUAL_TYPE);
+                result = Token(LA(1), 1, EQUAL_TYPE);
                 consume();
-                return RC_OK;
+                rc = RC_OK;
+                return result;
             default:
                 break;
         }
         if (isDigit(*LA(1)))
         {
-            token = INTEGER_LITERAL();
-            return RC_OK;
+            rc = RC_OK;
+            return INTEGER_LITERAL();
         }
         if (isLetter(*LA(1)) && !isLetter(*LA(2)))
         {
-            token = Token(LA(1), 1, VAR_TYPE);
+            result = Token(LA(1), 1, VAR_TYPE);
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         if (*LA(1) == '<' && *LA(2) != '=' && *LA(2) != '>')
         {
-            token = Token(LA(1), 1, LT_TYPE);
+            result = Token(LA(1), 1, LT_TYPE);
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         if (*LA(1) == '<' && *LA(2) == '=')
         {
-            token = Token(LA(1), 2, LE_TYPE);
+            result = Token(LA(1), 2, LE_TYPE);
             consume();
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         if (*LA(1) == '>' && *LA(2) != '=')
         {
-            token = Token(LA(1), 1, GT_TYPE);
+            result = Token(LA(1), 1, GT_TYPE);
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         if (*LA(1) == '>' && *LA(2) == '=')
         {
-            token = Token(LA(1), 2, GE_TYPE);
+            result = Token(LA(1), 2, GE_TYPE);
             consume();
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         if (*LA(1) == '<' && *LA(2) == '>')
         {
-            token = Token(LA(1), 2, NEQ_TYPE);
+            result = Token(LA(1), 2, NEQ_TYPE);
             consume();
             consume();
-            return RC_OK;
+            rc = RC_OK;
+            return result;
         }
         for (auto keyword : KEYWORDS)
         {
             if (foresee(keyword.typeStr))
             {
-                token = KEYWORD(keyword);
-                return RC_OK;
+                rc = RC_OK;
+                return KEYWORD(keyword);
             }
         }
-        token = Token(LA(1), 1, NA_TYPE);
+        result = Token(LA(1), 1, NA_TYPE);
         consume();
-        return RC_OK;
+        rc = RC_OK;
+        return result;
     }
-    token = Token(LA(1), EOF_TYPE);
-    return RC_OK;
+    rc = RC_OK;
+    return Token(LA(1), EOF_TYPE);
 }
 
 bool BasicLexer::foresee(char const* keyword) const
