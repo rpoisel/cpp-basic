@@ -12,32 +12,33 @@ RC BasicLexer::nextToken(Token& token)
         switch(*LA(1))
         {
             case '\n':
-                consume();
                 token = Token(LA(1), 1, NEWLINE_TYPE);
+                consume();
                 return RC_OK;
             case '\"':
                 consume();
                 token = STRING_LITERAL();
+                consume();
                 return RC_OK;
             case '+':
-                consume();
                 token = Token(LA(1), 1, PLUS_TYPE);
+                consume();
                 return RC_OK;
             case '-':
-                consume();
                 token = Token(LA(1), 1, MINUS_TYPE);
+                consume();
                 return RC_OK;
             case '*':
-                consume();
                 token = Token(LA(1), 1, ASTERISK_TYPE);
+                consume();
                 return RC_OK;
             case '/':
-                consume();
                 token = Token(LA(1), 1, DIVIDER_TYPE);
+                consume();
                 return RC_OK;
             case '=':
-                consume();
                 token = Token(LA(1), 1, EQUAL_TYPE);
+                consume();
                 return RC_OK;
             default:
                 break;
@@ -130,34 +131,33 @@ Token BasicLexer::INTEGER_LITERAL()
 
 Token BasicLexer::GROUP(CheckCb cb, TokenIdType const& tokenType)
 {
-    Token token(LA(1), tokenType);
+    char const* begin = LA(1);
+    size_t len = 0;
     do
     {
-        token.setLen(token.getLen() + 1);
+        len++;
         consume();
     } while(cb(*LA(1)));
-    return token;
+    return Token(begin, len, tokenType);
 }
 
 Token BasicLexer::KEYWORD(KeywordTokenType const& tokenType)
 {
-    Token token(LA(1), tokenType.typeId);
-
+    char const* begin = LA(1);
     size_t len;
     match(tokenType.typeStr, len);
-    token.setLen(len);
 
-    return token;
+    return Token(begin, len, tokenType.typeId);
 }
 
 Token BasicLexer::STRING_LITERAL()
 {
-    Token token(LA(1), STRING_LITERAL_TYPE);
+    char const* begin = LA(1);
+    size_t len = 0;
     while(*LA(1) != '\"')
     {
-        token.setLen(token.getLen() + 1);
+        len++;
         consume();
     }
-    consume();
-    return token;
+    return Token(begin, len, STRING_LITERAL_TYPE);
 }

@@ -56,7 +56,6 @@ RC BasicInterpreter::line()
     if (LA(1).getType() == INTEGER_LITERAL_TYPE)
     {
         consume();
-        return RC_OK;
     }
     RC rc = statement();
     if (RC_FAILED(rc) || rc == RC_CONTINUE)

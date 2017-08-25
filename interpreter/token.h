@@ -23,7 +23,6 @@ public:
     char const* getText() const { return text; }
     void getNullTerminatedText(char* buf, size_t buflen) const;
     size_t getLen() const { return len; }
-    void setLen(size_t newLen) { len = newLen; }
     TokenIdType getType() const { return type; }
 
 private:
