@@ -3,7 +3,7 @@ add_library(posix_facilities STATIC
 )
 
 target_link_libraries(posix_facilities PUBLIC
-    basic_parser
+    basic_interpreter
 )
 
 target_include_directories(posix_facilities INTERFACE
@@ -27,18 +27,3 @@ set_target_properties(basic PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED ON
 )
-
-add_executable(line_parser
-    line_parser.cpp
-)
-
-target_link_libraries(line_parser PRIVATE
-    posix_facilities
-    basic_parser_print
-)
-
-set_target_properties(line_parser PROPERTIES
-    CXX_STANDARD 11
-    CXX_STANDARD_REQUIRED ON
-)
-

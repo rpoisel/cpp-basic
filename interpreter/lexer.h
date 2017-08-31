@@ -1,27 +1,36 @@
 #pragma once
 
+#include "basic_source.h"
 #include "token.h"
-
-#include <string.h>
 
 class Lexer
 {
 public:
-    Lexer(char const* input) : input(input), cur(input), end(input + ::strlen(input)) {}
-    virtual ~Lexer() {}
+  Lexer(BasicSource& input) :
+      input(input)
+  {
+  }
+  virtual ~Lexer()
+  {
+  }
 
-    virtual Token nextToken(RC& rc) = 0;
+  virtual Token nextToken(RC& rc) = 0;
 
-    char const* LA(size_t i) const { return cur + i - 1 >= end ? end : cur + i - 1; }
-    void reset(char const* newCur) { cur = newCur; }
+  inline char const* LA(size_t i) const
+      {
+    return input.LA(i);
+  }
+  inline void reset(char const* newCur)
+  {
+    input.set(newCur);
+  }
 
 protected:
-    RC match(char const x);
-    RC match(char const* str, size_t& cnt);
-    void consume();
-
-private:
-    char const* const input;
-    char const* cur;
-    char const* end;
+  RC match(char const x);
+  RC match(char const* str, size_t& cnt);
+  inline void consume()
+  {
+    input.consume();
+  }
+  BasicSource& input;
 };

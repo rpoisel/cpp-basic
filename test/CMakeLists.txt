@@ -12,7 +12,7 @@ add_executable(lexerTestApp
 )
 
 target_link_libraries(lexerTestApp PRIVATE
-    basic_parser_print
+    basic_interpreter_print
     Catch
 )
 
@@ -23,9 +23,20 @@ add_executable(interpreterTestApp
 )
 
 target_link_libraries(interpreterTestApp PRIVATE
-    basic_parser_print
+    basic_interpreter_print
     posix_facilities
     Catch
 )
 
 ParseAndAddCatchTests(interpreterTestApp)
+
+add_executable(sourceTestApp
+    test_source.cpp
+)
+
+target_link_libraries(sourceTestApp PRIVATE
+    basic_interpreter
+    Catch
+)
+
+ParseAndAddCatchTests(sourceTestApp)

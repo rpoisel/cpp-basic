@@ -1,14 +1,5 @@
 #include "lexer.h"
 
-void Lexer::consume()
-{
-    if (cur == end)
-    {
-        return;
-    }
-    cur++;
-}
-
 RC Lexer::match(char const x)
 {
     if (*LA(1) == x)
