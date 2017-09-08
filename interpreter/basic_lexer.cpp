@@ -1,6 +1,11 @@
 #include "basic_lexer.h"
 
-Token BasicLexer::nextToken(RC& rc)
+namespace Lang
+{
+namespace Basic
+{
+
+Token Lexer::nextToken(RC& rc)
 {
     Token result;
     while(*LA(1))
@@ -118,7 +123,7 @@ Token BasicLexer::nextToken(RC& rc)
     return Token(LA(1), EOF_TYPE);
 }
 
-bool BasicLexer::foresee(char const* keyword) const
+bool Lexer::foresee(char const* keyword) const
 {
     size_t idx;
     for (idx = 0; keyword[idx]; idx++)
@@ -131,7 +136,7 @@ bool BasicLexer::foresee(char const* keyword) const
     return !isLetter(*LA(idx + 1));
 }
 
-void BasicLexer::WS()
+void Lexer::WS()
 {
     while(*LA(1) == ' ' || *LA(1) == '\t' || *LA(1) == '\n' || *LA(1) == '\r')
     {
@@ -139,12 +144,12 @@ void BasicLexer::WS()
     }
 }
 
-Token BasicLexer::INTEGER_LITERAL()
+Token Lexer::INTEGER_LITERAL()
 {
     return GROUP(isDigit, INTEGER_LITERAL_TYPE);
 }
 
-Token BasicLexer::GROUP(CheckCb cb, TokenIdType const& tokenType)
+Token Lexer::GROUP(CheckCb cb, TokenIdType const& tokenType)
 {
     char const* begin = LA(1);
     size_t len = 0;
@@ -156,7 +161,7 @@ Token BasicLexer::GROUP(CheckCb cb, TokenIdType const& tokenType)
     return Token(begin, len, tokenType);
 }
 
-Token BasicLexer::KEYWORD(KeywordTokenType const& tokenType)
+Token Lexer::KEYWORD(KeywordTokenType const& tokenType)
 {
     char const* begin = LA(1);
     size_t len;
@@ -165,7 +170,7 @@ Token BasicLexer::KEYWORD(KeywordTokenType const& tokenType)
     return Token(begin, len, tokenType.typeId);
 }
 
-Token BasicLexer::STRING_LITERAL()
+Token Lexer::STRING_LITERAL()
 {
     char const* begin = LA(1);
     size_t len = 0;
@@ -175,4 +180,7 @@ Token BasicLexer::STRING_LITERAL()
         consume();
     }
     return Token(begin, len, STRING_LITERAL_TYPE);
+}
+
+}
 }

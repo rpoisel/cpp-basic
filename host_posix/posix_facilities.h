@@ -2,7 +2,12 @@
 
 #include "basic_facilities.h"
 
-class PosixFacilities : public BasicFacilities
+namespace Lang
+{
+namespace Basic
+{
+
+class PosixFacilities : public Facilities
 {
 public:
     RC print(Token const& stringLiteral);
@@ -11,3 +16,5 @@ public:
     RC print(ExpressionNumberValue value);
 };
 
+}
+}

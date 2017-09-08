@@ -1,12 +1,14 @@
 #pragma once
 
-#include "basic_source.h"
-#include "token.h"
+#include "lang_source.h"
+#include "lang_token.h"
 
+namespace Lang
+{
 class Lexer
 {
 public:
-  Lexer(BasicSource& input) :
+  Lexer(Source& input) :
       input(input)
   {
   }
@@ -32,5 +34,8 @@ protected:
   {
     input.consume();
   }
-  BasicSource& input;
+
+private:
+  Source& input;
 };
+}

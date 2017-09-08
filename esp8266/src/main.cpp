@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-#include <string.h>
+#include <cstring>
 
 constexpr char const* basic_prog PROGMEM
 {
@@ -34,9 +34,9 @@ void setup()
 
 void loop()
 {
-  ArduinoFacilities facilities;
-  BasicSource source;
+  Lang::Basic::ArduinoFacilities facilities;
+  Lang::Basic::Source source;
   source.add(basic_prog, ::strlen(basic_prog));
-  BasicInterpreter interpreter(source, facilities);
+  Lang::Basic::Interpreter interpreter(source, facilities);
   interpreter.run();
 }

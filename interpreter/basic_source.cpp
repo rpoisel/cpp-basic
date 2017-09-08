@@ -3,7 +3,12 @@
 
 #include <string.h>
 
-BasicSource::~BasicSource()
+namespace Lang
+{
+namespace Basic
+{
+
+Source::~Source()
 {
   auto line = firstLine;
   while (line)
@@ -14,7 +19,7 @@ BasicSource::~BasicSource()
   }
 }
 
-RC BasicSource::add(char const* sourceFragment, size_t len)
+RC Source::add(char const* sourceFragment, size_t len)
 {
   if (sourceFragment[len - 1] != '\n')
   {
@@ -25,7 +30,7 @@ RC BasicSource::add(char const* sourceFragment, size_t len)
 
   while (*cur)
   {
-    auto line = new BasicLine(cur);
+    auto line = new Line(cur);
     bool parsingLineNo = true;
     if (!line)
     {
@@ -77,7 +82,7 @@ RC BasicSource::add(char const* sourceFragment, size_t len)
   return RC_OK;
 }
 
-RC BasicSource::add(BasicLine* line)
+RC Source::add(Line* line)
 {
   if (!firstLine)
   {
@@ -96,7 +101,7 @@ RC BasicSource::add(BasicLine* line)
   return RC_OK;
 }
 
-char const* BasicSource::LA(size_t i) const
+char const* Source::LA(size_t i) const
     {
   if (!curLine || !*curPosition)
   {
@@ -124,7 +129,7 @@ char const* BasicSource::LA(size_t i) const
   return cur;
 }
 
-RC BasicSource::set(char const* newPosition)
+RC Source::set(char const* newPosition)
 {
   auto line = firstLine;
   while (line)
@@ -140,7 +145,7 @@ RC BasicSource::set(char const* newPosition)
   return RC_ERROR; /* not found */
 }
 
-RC BasicSource::jump(Token const& target)
+RC Source::jump(Token const& target)
 {
   if (!(target.getType() == INTEGER_LITERAL_TYPE))
   {
@@ -161,7 +166,7 @@ RC BasicSource::jump(Token const& target)
   return RC_ERROR; /* target not found */
 }
 
-void BasicSource::consume()
+void Source::consume()
 {
   if (*curPosition)
   {
@@ -174,4 +179,7 @@ void BasicSource::consume()
     return;
   }
   curPosition = curLine->begin;
+}
+
+}
 }

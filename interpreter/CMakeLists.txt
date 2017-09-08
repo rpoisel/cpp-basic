@@ -1,11 +1,11 @@
 add_library(basic_interpreter STATIC
-    token.cpp
-    lexer.cpp
     basic_variant.cpp
     basic_source.cpp
     basic_lexer.cpp
     basic_interpreter.cpp
     basic_commands.cpp
+    lang_token.cpp
+    lang_lexer.cpp
 )
 
 target_include_directories(basic_interpreter INTERFACE

@@ -4,6 +4,11 @@
 
 #include <stdint.h>
 
+namespace Lang
+{
+namespace Basic
+{
+
 ArduinoFacilities::ArduinoFacilities()
 {
     Serial.begin(9600);
@@ -35,4 +40,7 @@ RC ArduinoFacilities::print(ExpressionNumberValue value)
     Serial.print(static_cast<long int>(value));
     Serial.flush();
     return RC_OK;
+}
+
+}
 }

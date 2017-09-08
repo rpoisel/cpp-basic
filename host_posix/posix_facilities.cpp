@@ -3,15 +3,20 @@
 #include <iostream>
 #include <string>
 
-RC PosixFacilities::print(Token const& stringLiteral)
+namespace Lang
+{
+namespace Basic
+{
+
+RC PosixFacilities::print(Lang::Token const& stringLiteral)
 {
     return print(stringLiteral.getText(), stringLiteral.getLen());
 }
 
 
-RC PosixFacilities::print(BasicVariant& variant)
+RC PosixFacilities::print(Lang::Basic::BasicVariant& variant)
 {
-    if (variant.getType() == STRING)
+    if (variant.getType() == Lang::Basic::STRING)
     {
         return print(variant.asString().base, variant.asString().len);
     }
@@ -25,8 +30,11 @@ RC PosixFacilities::print(char const* string, size_t len)
     return RC_OK;
 }
 
-RC PosixFacilities::print(ExpressionNumberValue value)
+RC PosixFacilities::print(Lang::Basic::ExpressionNumberValue value)
 {
     std::cout << value << std::flush;
     return RC_OK;
+}
+
+}
 }

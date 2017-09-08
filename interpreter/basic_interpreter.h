@@ -8,15 +8,16 @@
 
 constexpr size_t const K = 6;
 
-class BasicInterpreter
+namespace Lang
+{
+namespace Basic
+{
+
+class Interpreter
 {
 public:
-  BasicInterpreter(BasicSource& source, BasicFacilities& facilities);
+  Interpreter(Source& source, Facilities& facilities);
   RC run();
-  BasicLexer& getLexer()
-  {
-    return lexer;
-  }
 
   void reset(char const* cur);
   void consume();
@@ -26,7 +27,7 @@ public:
     return lookahead[(p + i - 1) % K];
   }
 
-  BasicFacilities& getFacilities() const
+  Facilities& getFacilities() const
   {
     return facilities;
   }
@@ -69,8 +70,8 @@ public:
   }
 
 private:
-  BasicLexer lexer;
-  BasicFacilities& facilities;
+  Lexer lexer;
+  Facilities& facilities;
   Token lookahead[K];
   size_t p;
   ExpressionNumberValue variables[26];
@@ -84,7 +85,7 @@ private:
 
   inline static char getNormalizedName(char varName)
   {
-    return BasicLexer::isLowercaseLetter(varName) ?
+    return Lexer::isLowercaseLetter(varName) ?
                                                     (varName - 'a') + 'A' :
                                                     varName;
   }
@@ -94,3 +95,5 @@ private:
   }
 };
 
+}
+}

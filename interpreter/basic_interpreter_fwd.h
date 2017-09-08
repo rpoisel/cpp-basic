@@ -1,3 +1,11 @@
 #pragma once
 
-class BasicInterpreter;
+namespace Lang
+{
+namespace Basic
+{
+
+class Interpreter;
+
+}
+}

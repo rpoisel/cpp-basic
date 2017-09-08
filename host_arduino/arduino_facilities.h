@@ -2,7 +2,12 @@
 
 #include "basic_facilities.h"
 
-class ArduinoFacilities : public BasicFacilities
+namespace Lang
+{
+namespace Basic
+{
+
+class ArduinoFacilities : public Facilities
 {
 public:
     ArduinoFacilities();
@@ -12,4 +17,5 @@ public:
     RC print(ExpressionNumberValue value);
 };
 
-
+}
+}

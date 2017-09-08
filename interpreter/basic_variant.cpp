@@ -1,5 +1,10 @@
 #include "basic_variant.h"
 
+namespace Lang
+{
+namespace Basic
+{
+
 ExpressionNumberValue BasicVariant::toNumber(char const* string, size_t len)
 {
     ExpressionNumberValue result = 0;
@@ -9,4 +14,7 @@ ExpressionNumberValue BasicVariant::toNumber(char const* string, size_t len)
         result += string[idx] - '0';
     }
     return result;
+}
+
+}
 }

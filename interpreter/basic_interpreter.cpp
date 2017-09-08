@@ -1,13 +1,18 @@
 #include "basic_interpreter.h"
 
-BasicInterpreter::BasicInterpreter(BasicSource& source, BasicFacilities& facilities)
+namespace Lang
+{
+namespace Basic
+{
+
+Interpreter::Interpreter(Source& source, Facilities& facilities)
 :
     lexer(source), facilities(facilities), p(0)
 {
   prefillLookahead();
 }
 
-RC BasicInterpreter::run()
+RC Interpreter::run()
 {
   RC rc;
   do
@@ -17,14 +22,14 @@ RC BasicInterpreter::run()
   return rc;
 }
 
-void BasicInterpreter::consume()
+void Interpreter::consume()
 {
   RC rc;
   lookahead[p] = lexer.nextToken(rc);
   p = (p + 1) % K;
 }
 
-void BasicInterpreter::reset(char const* cur)
+void Interpreter::reset(char const* cur)
 {
   lexer.reset(cur);
 
@@ -32,7 +37,7 @@ void BasicInterpreter::reset(char const* cur)
   prefillLookahead();
 }
 
-RC BasicInterpreter::match(TokenIdType const& tokenType)
+RC Interpreter::match(TokenIdType const& tokenType)
 {
   if (LA(1).getType() == tokenType)
   {
@@ -42,7 +47,7 @@ RC BasicInterpreter::match(TokenIdType const& tokenType)
   return RC_ERROR;
 }
 
-RC BasicInterpreter::line()
+RC Interpreter::line()
 {
   if (LA(1).getType() == EOF_TYPE)
   {
@@ -61,7 +66,7 @@ RC BasicInterpreter::line()
   return match(NEWLINE_TYPE);
 }
 
-bool BasicInterpreter::condition(RC& rc)
+bool Interpreter::condition(RC& rc)
 {
   auto left = expression(rc);
   if (RC_FAILED(rc))
@@ -108,12 +113,12 @@ bool BasicInterpreter::condition(RC& rc)
   return conditionResult;
 }
 
-RC BasicInterpreter::statement()
+RC Interpreter::statement()
 {
-  return basicCommandRegistry.handleStatement(this);
+  return commandRegistry.handleStatement(this);
 }
 
-BasicVariant BasicInterpreter::expressionList(RC& rc)
+BasicVariant Interpreter::expressionList(RC& rc)
 {
   if (LA(1).getType() == STRING_LITERAL_TYPE)
   {
@@ -125,7 +130,7 @@ BasicVariant BasicInterpreter::expressionList(RC& rc)
   return BasicVariant(expression(rc));
 }
 
-RC BasicInterpreter::jump(Token const& target)
+RC Interpreter::jump(Token const& target)
 {
   RC rc = lexer.jump(target);
   if (RC_FAILED(rc))
@@ -136,12 +141,12 @@ RC BasicInterpreter::jump(Token const& target)
   return RC_OK;
 }
 
-bool BasicInterpreter::isExpression(size_t offset) const
+bool Interpreter::isExpression(size_t offset) const
     {
   return LA(1).getType() == PLUS_TYPE || LA(1).getType() == MINUS_TYPE || isTerm(offset);
 }
 
-ExpressionNumberValue BasicInterpreter::expression(RC& rc)
+ExpressionNumberValue Interpreter::expression(RC& rc)
 {
   if (!isExpression(1))
   {
@@ -165,12 +170,12 @@ ExpressionNumberValue BasicInterpreter::expression(RC& rc)
   return result - expression(rc);
 }
 
-bool BasicInterpreter::isTerm(size_t offset) const
+bool Interpreter::isTerm(size_t offset) const
     {
   return isFactor(offset);
 }
 
-ExpressionNumberValue BasicInterpreter::term(RC& rc)
+ExpressionNumberValue Interpreter::term(RC& rc)
 {
   auto result = factor(rc);
   if (RC_FAILED(rc))
@@ -190,12 +195,12 @@ ExpressionNumberValue BasicInterpreter::term(RC& rc)
   return result;
 }
 
-bool BasicInterpreter::isFactor(size_t offset) const
+bool Interpreter::isFactor(size_t offset) const
     {
   return LA(offset).getType() == VAR_TYPE || LA(offset).getType() == INTEGER_LITERAL_TYPE;
 }
 
-ExpressionNumberValue BasicInterpreter::factor(RC& rc)
+ExpressionNumberValue Interpreter::factor(RC& rc)
 {
   if (LA(1).getType() == VAR_TYPE)
   {
@@ -220,9 +225,12 @@ ExpressionNumberValue BasicInterpreter::factor(RC& rc)
   return -1;
 }
 
-bool BasicInterpreter::isRelOp(size_t offset) const
+bool Interpreter::isRelOp(size_t offset) const
     {
   return LA(offset).getType() == LT_TYPE || LA(offset).getType() == LE_TYPE
       || LA(offset).getType() == GT_TYPE || LA(offset).getType() == GE_TYPE
       || LA(offset).getType() == EQUAL_TYPE || LA(offset).getType() == NEQ_TYPE;
+}
+
+}
 }

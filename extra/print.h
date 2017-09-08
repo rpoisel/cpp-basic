@@ -1,7 +1,7 @@
 #pragma once
 
-#include "token.h"
+#include "lang_token.h"
 
 #include <iostream>
 
-std::ostream & operator<<(std::ostream &os, Token const &token);
+std::ostream & operator<<(std::ostream &os, Lang::Token const &token);

@@ -55,9 +55,9 @@ int main(void)
           "70 WEND\n"
           "80 REM This should be ignored.\n"
           "100 PRINT \"END\n\"\n";
-  PosixFacilities facilities;
-  BasicSource source;
+  Lang::Basic::PosixFacilities facilities;
+  Lang::Basic::Source source;
   source.add(sourceCode, ::strlen(sourceCode));
-  BasicInterpreter interpreter(source, facilities);
-  return RC_SUCCEEDED(interpreter.run()) ? 0 : 1;
+  Lang::Basic::Interpreter interpreter(source, facilities);
+  return Lang::RC_SUCCEEDED(interpreter.run()) ? 0 : 1;
 }

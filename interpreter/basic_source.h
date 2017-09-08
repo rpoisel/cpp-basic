@@ -1,28 +1,33 @@
 #pragma once
 
-#include "list.h"
-#include "token.h"
+#include "lang_token.h"
+#include "lang_source.h"
 
-struct BasicLine
+namespace Lang
 {
-  BasicLine(char const* begin) :
+namespace Basic
+{
+
+struct Line
+{
+  Line(char const* begin) :
       begin(begin), lenLineNo(0), lenLine(0), next(nullptr)
   {
   }
   char const* begin;
   size_t lenLineNo;
   size_t lenLine;
-  BasicLine* next;
+  Line* next;
 };
 
-class BasicSource final
+class Source final : public Lang::Source
 {
 public:
-  BasicSource() :
+  Source() :
       firstLine(nullptr), curLine(nullptr), curPosition(nullptr), terminator('\0')
   {
   }
-  ~BasicSource();
+  ~Source();
   RC add(char const* sourceFragment, size_t buflen);
   char const* LA(size_t i) const;
   RC set(char const* newPosition);
@@ -30,9 +35,12 @@ public:
   void consume();
 
 private:
-  RC add(BasicLine* line);
-  BasicLine* firstLine;
-  BasicLine* curLine;
+  RC add(Line* line);
+  Line* firstLine;
+  Line* curLine;
   char const* curPosition;
   char const terminator;
 };
+
+}
+}

@@ -22,17 +22,17 @@ SCENARIO("Interpreting a basic snippet", "[interpreter]")
     "70 PRINT \"END\n\"\n";
     THEN("List of tokens should be as expected")
     {
-      PosixFacilities facilities;
-      BasicSource source;
+      Lang::Basic::PosixFacilities facilities;
+      Lang::Basic::Source source;
       source.add(sourceCode, ::strlen(sourceCode));
-      BasicInterpreter interpreter(source, facilities);
-      REQUIRE(interpreter.setVarValue('B', 42) == RC_OK);
-      REQUIRE(interpreter.setVarValue(213, 42) == RC_ERROR);
-      REQUIRE(interpreter.run() == RC_FINISH);
-      ExpressionNumberValue varVal;
-      REQUIRE(interpreter.getVarValue('A', varVal) == RC_OK);
+      Lang::Basic::Interpreter interpreter(source, facilities);
+      REQUIRE(interpreter.setVarValue('B', 42) == Lang::RC_OK);
+      REQUIRE(interpreter.setVarValue(213, 42) == Lang::RC_ERROR);
+      REQUIRE(interpreter.run() == Lang::RC_FINISH);
+      Lang::Basic::ExpressionNumberValue varVal;
+      REQUIRE(interpreter.getVarValue('A', varVal) == Lang::RC_OK);
       REQUIRE(varVal == 6);
-      REQUIRE(interpreter.getVarValue('B', varVal) == RC_OK);
+      REQUIRE(interpreter.getVarValue('B', varVal) == Lang::RC_OK);
       REQUIRE(varVal == 43);
     }
   }

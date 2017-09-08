@@ -2,6 +2,9 @@
 
 #include <stdlib.h>
 
+namespace Container
+{
+
 template<typename T>
 struct ListEntry
 {
@@ -95,4 +98,6 @@ template<typename T>
 ListIterator<T> List<T>::getIterator() const
 {
   return ListIterator<T>(root);
+}
+
 }

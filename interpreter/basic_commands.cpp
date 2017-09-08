@@ -2,17 +2,22 @@
 #include "basic_interpreter.h"
 #include "basic_lexer.h"
 
-class PrintCommand: public BasicCommand
+namespace Lang
+{
+namespace Basic
+{
+
+class PrintCommand: public Command
 {
 public:
   constexpr PrintCommand() :
-      BasicCommand(PRINT_TYPE)
+      Command(PRINT_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC PrintCommand::execute(BasicInterpreter* const interpreter) const
+RC PrintCommand::execute(Interpreter* const interpreter) const
     {
   interpreter->consume();
   RC rc;
@@ -25,17 +30,17 @@ RC PrintCommand::execute(BasicInterpreter* const interpreter) const
   return RC_ERROR;
 }
 
-class LetCommand: public BasicCommand
+class LetCommand: public Command
 {
 public:
   constexpr LetCommand() :
-      BasicCommand(LET_TYPE)
+      Command(LET_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC LetCommand::execute(BasicInterpreter* const interpreter) const
+RC LetCommand::execute(Interpreter* const interpreter) const
     {
   interpreter->consume();
   if (!(interpreter->LA(1).getType() == VAR_TYPE))
@@ -58,33 +63,33 @@ RC LetCommand::execute(BasicInterpreter* const interpreter) const
   return RC_SUCCEEDED(rc) ? (RC_SUCCEEDED(rcSetVarValue) ? RC_OK : rcSetVarValue) : rc;
 }
 
-class GotoCommand: public BasicCommand
+class GotoCommand: public Command
 {
 public:
   constexpr GotoCommand() :
-      BasicCommand(GOTO_TYPE)
+      Command(GOTO_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC GotoCommand::execute(BasicInterpreter* const interpreter) const
+RC GotoCommand::execute(Interpreter* const interpreter) const
     {
   interpreter->consume();
   return RC_SUCCEEDED(interpreter->jump(interpreter->LA(1))) ? RC_CONTINUE : RC_ERROR;
 }
 
-class RemCommand: public BasicCommand
+class RemCommand: public Command
 {
 public:
   constexpr RemCommand() :
-      BasicCommand(REM_TYPE)
+      Command(REM_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC RemCommand::execute(BasicInterpreter* const interpreter) const
+RC RemCommand::execute(Interpreter* const interpreter) const
     {
   while (!(interpreter->LA(1).getType() == NEWLINE_TYPE))
   {
@@ -93,17 +98,17 @@ RC RemCommand::execute(BasicInterpreter* const interpreter) const
   return RC_OK;;
 }
 
-class WhileCommand: public BasicCommand
+class WhileCommand: public Command
 {
 public:
   constexpr WhileCommand() :
-      BasicCommand(WHILE_TYPE)
+      Command(WHILE_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC WhileCommand::execute(BasicInterpreter* const interpreter) const
+RC WhileCommand::execute(Interpreter* const interpreter) const
     {
   interpreter->consume();
   char const* conditionPosition = interpreter->LA(1).getText();
@@ -151,17 +156,17 @@ RC WhileCommand::execute(BasicInterpreter* const interpreter) const
   return RC_OK;
 }
 
-class IfCommand: public BasicCommand
+class IfCommand: public Command
 {
 public:
   constexpr IfCommand() :
-      BasicCommand(IF_TYPE)
+      Command(IF_TYPE)
   {
   }
-  RC execute(BasicInterpreter* const interpreter) const;
+  RC execute(Interpreter* const interpreter) const;
 };
 
-RC IfCommand::execute(BasicInterpreter* const interpreter) const
+RC IfCommand::execute(Interpreter* const interpreter) const
     {
   interpreter->consume();
   RC rc;
@@ -198,9 +203,9 @@ constexpr static const RemCommand remCommand;
 constexpr static const WhileCommand whileCommand;
 constexpr static const IfCommand ifCommand;
 
-const BasicCommandRegistry basicCommandRegistry;
+const CommandRegistry commandRegistry;
 
-constexpr static BasicCommand const* const basicCommands[] = {
+constexpr static Command const* const basicCommands[] = {
     &whileCommand,
     &ifCommand,
     &remCommand,
@@ -209,7 +214,7 @@ constexpr static BasicCommand const* const basicCommands[] = {
     &printCommand,
 };
 
-RC BasicCommandRegistry::handleStatement(BasicInterpreter* const interpreter) const
+RC CommandRegistry::handleStatement(Interpreter* const interpreter) const
     {
   for (auto command : basicCommands)
   {
@@ -221,3 +226,5 @@ RC BasicCommandRegistry::handleStatement(BasicInterpreter* const interpreter) co
   return RC_ERROR;
 }
 
+}
+}

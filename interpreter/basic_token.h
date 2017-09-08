@@ -1,6 +1,11 @@
 #pragma once
 
-#include "token.h"
+#include "lang_token.h"
+
+namespace Lang
+{
+namespace Basic
+{
 
 constexpr TokenIdType const INTEGER_LITERAL_TYPE = 2;
 constexpr TokenIdType const STRING_LITERAL_TYPE = 3;
@@ -41,3 +46,6 @@ constexpr KeywordTokenType const KEYWORDS[] {
     { WHILE_TYPE, "WHILE" },
     { WEND_TYPE, "WEND" },
 };
+
+}
+}

@@ -1,11 +1,17 @@
 #pragma once
 
 #include "basic_token.h"
-#include "lexer.h"
+#include "basic_source.h"
+#include "lang_lexer.h"
+
+namespace Lang
+{
+namespace Basic
+{
 
 typedef bool (*CheckCb)(char);
 
-class BasicLexer: public Lexer
+class Lexer: public Lang::Lexer
 {
 public:
   constexpr static inline bool isWS(char const x)
@@ -29,12 +35,12 @@ public:
     return x >= '0' && x <= '9';
   }
 
-  BasicLexer(BasicSource& input) :
-      Lexer(input)
+  Lexer(Lang::Basic::Source& input) :
+      Lang::Lexer(input), input(input)
   {
   }
-  Token nextToken(RC& rc);
-  inline RC jump(Token const& target)
+  Lang::Token nextToken(RC& rc);
+  inline RC jump(Lang::Token const& target)
   {
     return input.jump(target);
   }
@@ -42,8 +48,13 @@ private:
   bool foresee(char const* keyword) const;
 
   void WS();
-  Token GROUP(CheckCb cb, TokenIdType const& tokenType);
-  Token INTEGER_LITERAL();
-  Token KEYWORD(KeywordTokenType const& tokenType);
-  Token STRING_LITERAL();
+  Lang::Token GROUP(CheckCb cb, Lang::TokenIdType const& tokenType);
+  Lang::Token INTEGER_LITERAL();
+  Lang::Token KEYWORD(Lang::Basic::KeywordTokenType const& tokenType);
+  Lang::Token STRING_LITERAL();
+
+  Lang::Basic::Source& input;
 };
+
+}
+}

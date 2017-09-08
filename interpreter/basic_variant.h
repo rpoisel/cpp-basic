@@ -3,6 +3,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
+namespace Lang
+{
+namespace Basic
+{
+
 typedef int64_t ExpressionNumberValue;
 
 enum ExpressionType {
@@ -46,3 +51,6 @@ private:
     ExpressionType type;
     ExpressionValue value;
 };
+
+}
+}
